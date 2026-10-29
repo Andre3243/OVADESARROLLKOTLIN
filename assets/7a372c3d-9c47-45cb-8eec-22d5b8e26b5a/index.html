@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mapa de Android Studio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+@font-face{font-family:"Unbounded";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/unbounded-500.woff2") format("woff2")}
+@font-face{font-family:"Unbounded";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/unbounded-700.woff2") format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/atkinson-hyperlegible-400.woff2") format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/atkinson-hyperlegible-700.woff2") format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/jetbrains-mono-400.woff2") format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/jetbrains-mono-500.woff2") format("woff2")}
+/* Sistema visual "Kotlin Lab": mundo del IDE oscuro con la paleta naranja-magenta-violeta de Kotlin; tema oscuro único por decisión */
+:root{
+  --bg:#13111c; --panel:#1b1828; --panel2:#231f35; --line:#302b47; --dot:#2a2640; --bezel:#0a0910;
+  --ink:#eeebf8; --muted:#a29cbf; --dim:#6f6990;
+  --kt1:#f05a4a; --kt2:#c711e1; --kt3:#7f52ff; --sky:#4fb6ff; --amber:#f5b335;
+  --grad:linear-gradient(100deg,var(--kt1),var(--kt2) 52%,var(--kt3));
+  --glow:rgba(127,82,255,.42);
+  --ok:#4fd18b; --ok-bg:#15301f; --bad:#ff6b5e; --bad-bg:#3a1a1c; --warn:#f5c451; --info:#8ab4ff;
+  --screen:#fbfaff; --screen2:#efebfb; --sink:#1d1a2b; --smuted:#5f5a78; --sline:#dcd7ef;
+  --sok:#18834a; --sok-bg:#e1f4e8; --sbad:#c3352a; --sbad-bg:#fde5e1; --snack:#2b2738;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"Cascadia Code",Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0}[hidden]{display:none!important}img{max-width:100%}
+body{background-color:var(--bg);background-image:radial-gradient(var(--dot) 1.2px,transparent 1.7px);background-size:22px 22px;color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+p,h1,h2,h3,ul,ol{margin:0}
+.wrap{max-width:1100px;margin:0 auto;padding-block:20px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:32px}
+.crumbs{font-family:var(--f-mono);font-size:12px;color:var(--dim);display:flex;gap:6px;align-items:center;padding:8px 12px;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow-x:auto;white-space:nowrap}
+.crumbs .file{color:var(--ink);display:inline-flex;align-items:center;gap:6px}
+.crumbs .file::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--grad)}
+.hero{display:flex;flex-direction:column;gap:14px;max-width:780px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+.eyebrow b{font-weight:500;color:var(--kt1)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,6.2vw,56px);line-height:1.02;letter-spacing:-.025em;text-wrap:balance}
+h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--muted);max-width:58ch;font-size:17px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--f-mono);font-size:12px;padding:5px 10px;border-radius:6px;background:var(--panel);border:1px solid var(--line);color:var(--muted)}
+.btn{font:inherit;font-weight:700;font-size:15px;min-height:46px;padding:12px 24px;border-radius:999px;border:0;cursor:pointer;color:#fff;background:var(--grad);background-size:170% 100%;background-position:0 0;transition:background-position .45s ease,transform .12s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover:not(:disabled){background-position:100% 0}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.ghost:hover:not(:disabled){box-shadow:inset 0 0 0 1.5px var(--kt3)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+.mono{font-family:var(--f-mono)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.92)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* Layout: barra de consignas fija arriba (HUD) y debajo la ventana de Android Studio como "imagen" interactiva con zonas y un reflector que se desliza entre ellas */
+:root{
+  --as-bg:#1e1f22; --as-panel:#2b2d30; --as-line:#393b40; --as-text:#dfe1e5; --as-dim:#868a91; --as-sel:#2e436e;
+  --as-green:#5fb865; --as-kw:#cf8e6d; --as-fn:#56a8f5; --as-str:#6aab73; --as-ann:#b3ae60; --as-num:#2aacb8; --as-cm:#7a7e85; --as-type:#c77dbb;
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+
+/* --- HUD de consignas --- */
+.hud{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:12px;box-shadow:0 18px 40px -24px rgba(0,0,0,.8)}
+.hud-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.step{font-family:var(--f-mono);font-size:12px;color:var(--muted);letter-spacing:.04em}
+.pips{display:flex;gap:6px}
+.pip{width:26px;height:6px;border-radius:6px;background:var(--line);transition:background .3s,transform .3s}
+.pip.now{background:var(--kt3);transform:scaleY(1.4)}
+.pip.first{background:var(--ok)} .pip.retry{background:var(--warn)}
+.hbody{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;min-height:58px}
+.hbody>*{animation:rise .3s ease both}
+.ask{flex:1 1 360px;font-family:var(--f-display);font-weight:500;font-size:clamp(17px,2.3vw,21px);line-height:1.3;letter-spacing:-.01em;text-wrap:balance}
+.hbody .acts{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}
+.msg{flex-basis:100%;font-size:15px;min-height:0}
+.msg:empty{display:none}
+.msg.bad{color:var(--bad)} .msg.hint{color:var(--warn)}
+.okname{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:700;font-size:clamp(18px,2.4vw,22px)}
+.okname i{width:26px;height:26px;border-radius:50%;background:var(--ok);color:var(--bg);display:grid;place-items:center;font-style:normal;font-size:14px;animation:pop .4s ease}
+.expl{color:var(--muted);font-size:15px;max-width:62ch}
+.okblock{flex:1 1 380px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.score{font-family:var(--f-display);font-weight:700;font-size:34px;line-height:1;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.btn.sm{min-height:40px;padding:8px 16px;font-size:14px}
+kbd{font-family:var(--f-mono);font-size:11px;padding:1px 6px;border:1px solid rgba(255,255,255,.35);border-radius:4px;margin-left:4px;opacity:.8}
+
+/* --- Escenario (la "imagen") --- */
+.viewport{overflow-x:auto;border-radius:14px;-webkit-overflow-scrolling:touch}
+.frame{position:relative;width:100%;min-width:680px;aspect-ratio:1200/720;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 40px 90px -40px var(--glow);user-select:none;-webkit-user-select:none;cursor:crosshair;transition:filter .5s}
+.frame.idle{filter:saturate(.55) brightness(.62)}
+.frame img.cap{position:absolute;inset:0;width:100%;height:100%;display:block}
+.swipe{display:none;font-family:var(--f-mono);font-size:12px;color:var(--dim);text-align:center}
+@media (max-width:720px){.swipe{display:block}}
+
+/* Capa de zonas, reflector y avisos (en porcentajes, encima de la imagen) */
+.zones{position:absolute;inset:0;z-index:3}
+.zone{position:absolute;border:0;padding:0;margin:0;background:transparent;border-radius:8px;cursor:crosshair;transition:box-shadow .2s}
+.zone:hover{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.22)}
+.zone:focus-visible{outline:3px solid var(--warn);outline-offset:-3px}
+.spot{position:absolute;z-index:2;pointer-events:none;border-radius:10px;opacity:0;
+  box-shadow:0 0 0 2.5px var(--ok),0 0 26px 2px rgba(79,209,139,.45),0 0 0 9999px rgba(8,7,14,.68);
+  transition:left .6s cubic-bezier(.65,0,.35,1),top .6s cubic-bezier(.65,0,.35,1),width .6s cubic-bezier(.65,0,.35,1),height .6s cubic-bezier(.65,0,.35,1),opacity .35s ease}
+.spot.on{opacity:1}
+.spot.explore{box-shadow:0 0 0 2.5px var(--kt3),0 0 26px 2px var(--glow),0 0 0 9999px rgba(8,7,14,.55)}
+.lab{position:absolute;left:10px;top:10px;font-family:var(--f-mono);font-size:12px;font-weight:500;white-space:nowrap;padding:5px 10px;border-radius:999px;background:var(--ok);color:var(--bg);box-shadow:0 6px 16px -6px rgba(0,0,0,.6)}
+.spot.explore .lab{background:var(--kt3);color:#fff}
+.spot.below .lab{top:calc(100% + 8px)}
+.flash{position:absolute;z-index:4;pointer-events:none;border-radius:8px;box-shadow:inset 0 0 0 2.5px var(--bad),0 0 20px rgba(255,107,94,.45);background:rgba(255,107,94,.1);animation:shake .45s ease, fadeout .5s 1.3s ease forwards}
+.flash .lab{background:var(--bad);color:#fff}
+.flash.below .lab{top:calc(100% + 8px)}
+@keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+@keyframes fadeout{to{opacity:0}}
+.ripple{position:absolute;z-index:4;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:2px solid var(--bad);pointer-events:none;animation:ripple .6s ease-out forwards}
+@keyframes ripple{to{transform:scale(4);opacity:0}}
+.pin{position:absolute;z-index:3;pointer-events:none;width:24px;height:24px;margin:8px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-mono);font-size:12px;font-weight:500;color:#fff;background:var(--kt3);box-shadow:0 0 0 3px rgba(127,82,255,.3);animation:pop .4s ease both}
+.explore-on .zone{box-shadow:inset 0 0 0 1.5px rgba(162,140,255,.45)}
+
+/* --- Modo edición (#editar) --- */
+.edit-on .zone{box-shadow:inset 0 0 0 2px var(--warn);background:rgba(245,196,81,.08)}
+.edit-on .zone::after{content:attr(data-name);position:absolute;left:6px;top:6px;font-family:var(--f-mono);font-size:11px;color:var(--bg);background:var(--warn);padding:2px 6px;border-radius:4px}
+.draw{position:absolute;z-index:5;border:2px dashed var(--sky);background:rgba(79,182,255,.12);pointer-events:none}
+.editout{font-family:var(--f-mono);font-size:13px;background:var(--bezel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;flex:1 1 300px;overflow-x:auto;white-space:pre}
+
+/* --- Recreación de Android Studio (lienzo de 1200 × 720) --- */
+.ide{position:absolute;left:0;top:0;width:1200px;height:720px;transform-origin:0 0;background:var(--as-bg);color:var(--as-text);font:13px/1.4 var(--f-body);overflow:hidden}
+.p{position:absolute;overflow:hidden;animation:boot .55s ease both;animation-delay:var(--d,0s)}
+@keyframes boot{from{opacity:0;transform:translateY(8px)}}
+.ph{height:30px;display:flex;align-items:center;gap:10px;padding:0 12px;font-size:12px;color:var(--as-dim);border-bottom:1px solid var(--as-line)}
+.ph b{color:var(--as-text);font-weight:700}
+.tb{left:0;top:0;width:1200px;height:44px;background:var(--as-panel);border-bottom:1px solid var(--as-line);display:flex;align-items:center;gap:10px;padding:0 12px}
+.ham{width:16px;height:12px;border-top:2px solid var(--as-dim);border-bottom:2px solid var(--as-dim);position:relative}.ham::after{content:"";position:absolute;left:0;right:0;top:3px;border-top:2px solid var(--as-dim)}
+.pchip{display:flex;align-items:center;gap:8px;padding:5px 10px;border-radius:6px;font-weight:700}
+.pchip .av{width:20px;height:20px;border-radius:5px;background:#3d6b4a;color:#c9f0d2;font-size:10px;display:grid;place-items:center}
+.vc{color:var(--as-dim);font-size:12px;display:flex;align-items:center;gap:6px}
+.vc::before{content:"";width:10px;height:10px;border:2px solid var(--as-dim);border-radius:50%}
+.runbar{position:absolute;left:820px;top:6px;width:190px;height:32px;display:flex;align-items:center;gap:8px}
+.dev{flex:1;height:28px;display:flex;align-items:center;gap:6px;padding:0 9px;border-radius:6px;background:var(--as-bg);font-size:12px;white-space:nowrap}
+.dev::before{content:"";width:8px;height:12px;border:1.5px solid var(--as-dim);border-radius:2px}
+.run{width:28px;height:28px;border-radius:6px;display:grid;place-items:center;background:rgba(95,184,101,.14)}
+.run::before{content:"";border-left:11px solid var(--as-green);border-top:7px solid transparent;border-bottom:7px solid transparent;margin-left:3px}
+.dbg{width:12px;height:14px;border-radius:6px 6px 5px 5px;border:2px solid var(--as-green);opacity:.85}
+.tbr{position:absolute;right:12px;top:12px;display:flex;gap:14px}
+.tbr i{width:18px;height:18px;border-radius:50%;border:2px solid var(--as-dim);display:block}
+.strip{top:44px;width:40px;height:646px;display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:12px}
+.strip.l{left:0;border-right:1px solid var(--as-line)} .strip.r{left:1160px;border-left:1px solid var(--as-line)}
+.strip i{width:20px;height:20px;border-radius:5px;border:1.8px solid var(--as-dim);display:block}
+.strip i.on{background:var(--as-sel);border-color:#6f8fd6}
+.proj{left:40px;top:44px;width:250px;height:456px;border-right:1px solid var(--as-line)}
+.tree{padding:6px 0;font-size:12.5px}
+.tree div{height:22px;display:flex;align-items:center;gap:6px;white-space:nowrap;padding-left:calc(10px + var(--i,0) * 16px)}
+.tree div.sel{background:var(--as-sel)}
+.tree .ar{width:10px;color:var(--as-dim);font-size:9px}
+.ic{width:13px;height:11px;border-radius:2px;flex:none}
+.ic.fo{background:#c3a56b;clip-path:polygon(0 0,40% 0,50% 20%,100% 20%,100% 100%,0 100%)}
+.ic.kt{background:linear-gradient(135deg,#f88909,#b125ea 60%,#7f52ff);height:12px;width:12px}
+.ic.xm{background:#e97d4f;height:12px;width:11px}
+.ic.gr{background:#4d9e8f;height:12px;width:11px}
+.ic.pk{background:#8a8e96;height:12px;width:12px;border-radius:3px}
+.ed{left:290px;top:44px;width:410px;height:456px;border-right:1px solid var(--as-line)}
+.tabs{height:30px;display:flex;border-bottom:1px solid var(--as-line);font-size:12px}
+.tabs span{display:flex;align-items:center;gap:6px;padding:0 12px;color:var(--as-dim)}
+.tabs span.on{color:var(--as-text);box-shadow:inset 0 -2px 0 #4f8ff7}
+.code{display:grid;grid-template-columns:34px 1fr;font:12px/17px var(--f-mono);padding-top:6px}
+.code .g{color:#5b5e65;text-align:right;padding-right:10px;white-space:pre}
+.code .c{white-space:pre;padding-left:6px}
+.k{color:var(--as-kw)} .f{color:var(--as-fn)} .s{color:var(--as-str)} .a{color:var(--as-ann)} .t{color:var(--as-type)} .cm{color:var(--as-cm)} .pa{color:#a9b7c6}
+.caret{display:inline-block;width:2px;height:14px;background:#ced0d6;vertical-align:-2px;animation:caret 1s steps(1) infinite}
+@keyframes caret{50%{opacity:0}}
+.pv{left:700px;top:44px;width:200px;height:456px;border-right:1px solid var(--as-line);background:#25262a}
+.seg{display:flex;gap:2px;margin-left:auto;background:var(--as-bg);border-radius:5px;padding:2px}
+.seg span{padding:1px 6px;border-radius:4px;font-size:11px}.seg .on{background:var(--as-sel);color:var(--as-text)}
+.surface{position:absolute;inset:30px 0 0;background-image:radial-gradient(#34363b 1px,transparent 1.4px);background-size:14px 14px}
+.pvlabel{position:absolute;left:18px;top:28px;font-size:11px;color:var(--as-dim)}
+.pvcard{position:absolute;left:18px;top:48px;width:164px;padding:10px 12px;background:#fff;color:#1d1b20;border-radius:3px;font-size:14px;box-shadow:0 0 0 1px #4f8ff7;animation:boot .5s .9s ease both}
+.pvhand{position:absolute;width:7px;height:7px;background:#4f8ff7}
+.rd{left:900px;top:44px;width:260px;height:456px}
+.rdtab{height:28px;display:flex;align-items:center;padding:0 12px;font-size:12px;border-bottom:1px solid var(--as-line);gap:8px}
+.rdtab span{padding:3px 8px;border-radius:5px;background:var(--as-bg)}
+.emu{position:absolute;left:55px;top:84px;width:150px;height:310px;border-radius:24px;background:#0c0c0f;padding:7px;box-shadow:0 0 0 1.5px #44464d}
+.emu .scr{width:100%;height:100%;border-radius:18px;overflow:hidden;position:relative;background:#000}
+.emu .bootscr{position:absolute;inset:0;display:grid;place-items:center;transition:opacity .5s}
+.emu .bootscr div{display:flex;gap:6px}
+.emu .bootscr i{width:8px;height:8px;border-radius:50%;background:#e8e8ef;animation:blink 1s infinite}
+.emu .bootscr i:nth-child(2){animation-delay:.15s}.emu .bootscr i:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,60%,100%{opacity:.2}30%{opacity:1}}
+.emu .app{position:absolute;inset:0;background:#fef7ff;color:#1d1b20;opacity:0;transition:opacity .6s}
+.emu.ready .bootscr{opacity:0} .emu.ready .app{opacity:1}
+.emu .sb{height:18px;display:flex;justify-content:space-between;align-items:center;padding:0 10px;font:9px var(--f-mono);color:#1d1b20}
+.emu .hello{padding:10px 12px;font-size:13px}
+.emu .pill{position:absolute;bottom:6px;left:50%;width:44px;height:3px;margin-left:-22px;border-radius:3px;background:#1d1b20;opacity:.6}
+.rdcap{position:absolute;left:0;right:0;bottom:22px;text-align:center;font-size:11px;color:var(--as-dim)}
+.lc{left:40px;top:500px;width:1120px;height:190px;border-top:1px solid var(--as-line)}
+.lctabs{height:30px;display:flex;align-items:center;gap:4px;padding:0 8px;font-size:12px;border-bottom:1px solid var(--as-line)}
+.lctabs span{padding:4px 10px;border-radius:5px;color:var(--as-dim)}.lctabs .on{color:var(--as-text);background:var(--as-panel)}
+.lcf{height:26px;display:flex;align-items:center;gap:10px;padding:0 12px;font:11.5px var(--f-mono);color:var(--as-dim);border-bottom:1px solid var(--as-line)}
+.lcf span{padding:2px 8px;background:var(--as-panel);border-radius:4px;color:var(--as-text)}
+.logs{font:11.5px/17px var(--f-mono);padding:4px 12px;display:flex;flex-direction:column;justify-content:flex-end;height:132px;overflow:hidden}
+.logs div{display:grid;grid-template-columns:150px 70px 22px 150px 1fr;gap:10px;white-space:nowrap;animation:boot .3s ease both}
+.logs .ts{color:#6f737a}.logs .pid{color:#6f737a}
+.lvI{color:#6aab73}.lvD{color:#56a8f5}.lvW{color:#d6bf55}
+.st{left:0;top:690px;width:1200px;height:30px;border-top:1px solid var(--as-line);background:var(--as-panel);display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:11.5px;color:var(--as-dim)}
+.st .bar{width:120px;height:4px;border-radius:4px;background:var(--as-line);overflow:hidden;display:inline-block;vertical-align:middle;margin-left:8px}
+.st .bar i{display:block;height:100%;width:0;background:#4f8ff7;animation:idx 2.2s .3s ease forwards}
+@keyframes idx{to{width:100%}}
+.st .r{display:flex;gap:16px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="crumbs"><span>OVA_Kotlin</span><span>›</span><span>app</span><span>›</span><span>src</span><span>›</span><span>main</span><span>›</span><span class="file">Actividad1_3.kt</span></div>
+
+  <header class="hero">
+    <div class="eyebrow"><span>OVA 1 · Desarrollo móvil con Kotlin</span><b>Actividad 1.3</b></div>
+    <h1>El mapa de <em>Android Studio</em></h1>
+    <p class="lead">Reconoce las zonas del IDE donde vas a trabajar. Lee cada consigna y toca la parte de la ventana que corresponde. Al acertar, el reflector te muestra qué es y para qué sirve.</p>
+    <div class="chips"><span class="chip">6 consignas</span><span class="chip">Identificación gráfica</span><span class="chip">Modo exploración al final</span></div>
+  </header>
+
+  <section class="hud" id="hud" aria-live="polite">
+    <div class="hud-top"><span class="step" id="hstep">Recorrido por Android Studio</span><div class="pips" id="pips" aria-hidden="true"></div></div>
+    <div class="hbody" id="hbody"></div>
+  </section>
+
+  <div>
+    <div class="viewport" id="viewport">
+      <div class="frame idle" id="frame">
+        <div class="ide" id="ide" aria-hidden="true">
+          <div class="p tb" style="--d:0s">
+            <span class="ham"></span>
+            <span class="pchip"><span class="av">MP</span>MiPrimeraApp</span>
+            <span class="vc">main</span>
+            <div class="runbar"><span class="dev">Pixel 8 API 35</span><span class="run"></span><span class="dbg"></span></div>
+            <div class="tbr"><i></i><i></i><i></i></div>
+          </div>
+          <div class="p strip l" style="--d:.05s"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+          <div class="p proj" style="--d:.12s">
+            <div class="ph"><b>Android</b><span>▾</span></div>
+            <div class="tree">
+              <div><span class="ar">▾</span><span class="ic fo"></span>app</div>
+              <div style="--i:1"><span class="ar">▾</span><span class="ic fo"></span>manifests</div>
+              <div style="--i:2"><span class="ar"></span><span class="ic xm"></span>AndroidManifest.xml</div>
+              <div style="--i:1"><span class="ar">▾</span><span class="ic fo"></span>kotlin+java</div>
+              <div style="--i:2"><span class="ar">▾</span><span class="ic pk"></span>com.ejemplo.miprimeraapp</div>
+              <div style="--i:3"><span class="ar">▸</span><span class="ic pk"></span>ui.theme</div>
+              <div style="--i:3" class="sel"><span class="ar"></span><span class="ic kt"></span>MainActivity.kt</div>
+              <div style="--i:1"><span class="ar">▾</span><span class="ic fo"></span>res</div>
+              <div style="--i:2"><span class="ar">▸</span><span class="ic fo"></span>drawable</div>
+              <div style="--i:2"><span class="ar">▸</span><span class="ic fo"></span>mipmap</div>
+              <div style="--i:2"><span class="ar">▸</span><span class="ic fo"></span>values</div>
+              <div style="--i:2"><span class="ar">▸</span><span class="ic fo"></span>xml</div>
+              <div><span class="ar">▾</span><span class="ic gr"></span>Gradle Scripts</div>
+              <div style="--i:1"><span class="ar"></span><span class="ic gr"></span>build.gradle.kts (Project)</div>
+              <div style="--i:1"><span class="ar"></span><span class="ic gr"></span>build.gradle.kts (Module :app)</div>
+              <div style="--i:1"><span class="ar"></span><span class="ic gr"></span>libs.versions.toml</div>
+            </div>
+          </div>
+          <div class="p ed" style="--d:.2s">
+            <div class="tabs"><span class="on"><span class="ic kt"></span>MainActivity.kt</span><span><span class="ic xm"></span>AndroidManifest.xml</span></div>
+            <div class="code">
+              <div class="g">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23</div>
+              <div class="c"><span class="k">package</span> com.ejemplo.miprimeraapp
+
+<span class="k">import</span> android.os.Bundle
+<span class="k">import</span> <span class="cm">...</span>
+
+<span class="k">class</span> <span class="t">MainActivity</span> : ComponentActivity() {
+    <span class="k">override fun</span> <span class="f">onCreate</span>(savedInstanceState: Bundle?) {
+        <span class="k">super</span>.onCreate(savedInstanceState)
+        setContent {
+            <span class="f">Saludo</span>(nombre = <span class="s">"Android"</span>)<span class="caret"></span>
+        }
+    }
+}
+
+<span class="a">@Composable</span>
+<span class="k">fun</span> <span class="f">Saludo</span>(nombre: String) {
+    Text(text = <span class="s">"¡Hola, </span><span class="k">$</span><span class="pa">nombre</span><span class="s">!"</span>)
+}
+
+<span class="a">@Preview</span>
+<span class="a">@Composable</span>
+<span class="k">fun</span> <span class="f">SaludoPreview</span>() { <span class="f">Saludo</span>(<span class="s">"Android"</span>) }</div>
+            </div>
+          </div>
+          <div class="p pv" style="--d:.28s">
+            <div class="ph"><b>Preview</b><span class="seg"><span>Code</span><span class="on">Split</span><span>Design</span></span></div>
+            <div class="surface">
+              <span class="pvlabel">SaludoPreview</span>
+              <div class="pvcard">¡Hola, Android!
+                <span class="pvhand" style="left:-4px;top:-4px"></span><span class="pvhand" style="right:-4px;top:-4px"></span><span class="pvhand" style="left:-4px;bottom:-4px"></span><span class="pvhand" style="right:-4px;bottom:-4px"></span>
+              </div>
+            </div>
+          </div>
+          <div class="p rd" style="--d:.36s">
+            <div class="ph"><b>Running Devices</b></div>
+            <div class="rdtab"><span>Pixel 8 API 35 ×</span></div>
+            <div class="emu" id="emu">
+              <div class="scr">
+                <div class="bootscr"><div><i></i><i></i><i></i></div></div>
+                <div class="app"><div class="sb"><span>9:41</span><span>▮▮ ▯</span></div><div class="hello">¡Hola, Android!</div><span class="pill"></span></div>
+              </div>
+            </div>
+            <span class="rdcap">Emulador en ejecución</span>
+          </div>
+          <div class="p strip r" style="--d:.05s"><i></i><i></i><i></i><i class="on"></i></div>
+          <div class="p lc" style="--d:.44s">
+            <div class="lctabs"><span class="on">Logcat</span><span>Build</span><span>Problems</span><span>Terminal</span></div>
+            <div class="lcf">Pixel 8 API 35 <span>package:mine</span></div>
+            <div class="logs" id="logs"></div>
+          </div>
+          <div class="p st" style="--d:.5s">
+            <span>MiPrimeraApp › app › src › main › kotlin+java › MainActivity.kt</span>
+            <span class="r"><span>Indexando<span class="bar"><i></i></span></span><span>10:44</span><span>LF</span><span>UTF-8</span><span>4 spaces</span></span>
+          </div>
+        </div>
+        <div class="spot" id="spot"><span class="lab" id="spotlab"></span></div>
+        <div class="zones" id="zones"></div>
+      </div>
+    </div>
+    <p class="swipe">Desliza la ventana hacia los lados para verla completa.</p>
+  </div>
+</div>
+
+<script>
+// ===== Configuración =====
+// Para usar una captura real: pega aquí la ruta o un data URI de la imagen y ajusta las zonas con el modo #editar.
+const CAPTURA = "";
+
+// Zonas en porcentajes de la imagen (x, y = esquina superior izquierda; w, h = ancho y alto).
+// El orden del arreglo es el orden de las consignas.
+const ZONAS = [
+  { id: "proyecto", nombre: "Explorador de proyecto", x: 3.33, y: 6.11, w: 20.83, h: 63.33,
+    consigna: "Toca el área donde se organizan las carpetas del proyecto: el código Kotlin y los recursos de la app.",
+    pista: "Busca a la izquierda algo con forma de árbol de carpetas.",
+    explicacion: "Muestra la estructura de la app: el AndroidManifest.xml, el código Kotlin dentro de su paquete, la carpeta res con imágenes y textos, y los scripts de Gradle." },
+  { id: "editor", nombre: "Editor de código", x: 24.17, y: 6.11, w: 34.17, h: 63.33,
+    consigna: "Toca la zona donde se escribe el código Kotlin de la aplicación.",
+    pista: "Es el área central, la que tiene números de línea.",
+    explicacion: "Aquí escribes Kotlin. Ofrece autocompletado, colores de sintaxis y avisos de errores mientras escribes." },
+  { id: "preview", nombre: "Vista previa de diseño", x: 58.33, y: 6.11, w: 16.67, h: 63.33,
+    consigna: "Toca el área que muestra cómo se verá la interfaz sin tener que ejecutar la app.",
+    pista: "Está junto al código y muestra el resultado de la función marcada con @Preview.",
+    explicacion: "Dibuja la interfaz a partir del código, sin instalar nada. Se actualiza mientras editas el diseño." },
+  { id: "run", nombre: "Barra de ejecución", x: 68.33, y: .83, w: 15.83, h: 4.44,
+    consigna: "Toca el control con el que eliges el dispositivo y ejecutas la app.",
+    pista: "Está en la barra superior: busca el triángulo verde de Run.",
+    explicacion: "Eliges el dispositivo virtual y pulsas Run (▶). Gradle compila el proyecto e instala la app en el emulador." },
+  { id: "emulador", nombre: "Emulador (Running Devices)", x: 75, y: 6.11, w: 21.67, h: 63.33,
+    consigna: "¿Dónde se está ejecutando la app ahora mismo? Tócalo.",
+    pista: "Busca un teléfono dentro de la ventana.",
+    explicacion: "El emulador simula un teléfono Android dentro de la computadora, para probar la app sin un dispositivo físico." },
+  { id: "logcat", nombre: "Logcat", x: 3.33, y: 69.44, w: 93.33, h: 26.39,
+    consigna: "Toca el panel donde la app muestra sus mensajes mientras se ejecuta.",
+    pista: "Está en la parte de abajo, con líneas que llevan hora y nivel.",
+    explicacion: "Consola de mensajes de la app en ejecución. Sirve para seguir lo que pasa y encontrar errores." }
+];
+
+// ===== Estado =====
+const $ = s => document.querySelector(s);
+const frame = $("#frame"), ide = $("#ide"), spot = $("#spot");
+let mode = "intro", cur = 0, fails = 0, results = [], hintUsed = false, exploreSel = -1;
+
+function beep(ok){
+  try{
+    const a = beep.ctx = beep.ctx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = a.createOscillator(), g = a.createGain();
+    o.frequency.setValueAtTime(ok ? 660 : 220, a.currentTime);
+    if (ok) o.frequency.setValueAtTime(880, a.currentTime + .09);
+    g.gain.setValueAtTime(.1, a.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, a.currentTime + .28);
+    o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime + .3);
+  }catch(e){}
+}
+
+// ===== Imagen: recreación escalada o captura real =====
+if (CAPTURA){
+  ide.remove();
+  const img = new Image(); img.className = "cap"; img.alt = "Interfaz de Android Studio"; img.src = CAPTURA;
+  img.onload = () => { frame.style.aspectRatio = img.naturalWidth + "/" + img.naturalHeight; };
+  frame.prepend(img);
+} else {
+  // El lienzo mide 1200 × 720 y se escala al ancho disponible, como si fuera una imagen
+  new ResizeObserver(() => { ide.style.transform = `scale(${frame.clientWidth / 1200})`; }).observe(frame);
+  setTimeout(() => $("#emu").classList.add("ready"), 1900);   // el emulador "arranca"
+  const LOGS = [
+    ["I","ActivityManager","Start proc com.ejemplo.miprimeraapp"],
+    ["D","MainActivity","onCreate()"],
+    ["I","Choreographer","Primer frame dibujado"],
+    ["D","MainActivity","setContent → Saludo(\"Android\")"],
+    ["W","OpenGLRenderer","Fallo al elegir config, usando la predeterminada"],
+    ["D","ProfileInstaller","Perfil de instalación escrito"],
+    ["I","MainActivity","onResume()"],
+    ["D","InputMethod","Teclado listo"]
+  ];
+  let li = 0;
+  const pushLog = () => {
+    const d = new Date(), L = LOGS[li++ % LOGS.length];
+    const ts = `2026-10-28 ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}:${String(d.getSeconds()).padStart(2,"0")}.${String(d.getMilliseconds()).padStart(3,"0")}`;
+    const row = document.createElement("div");
+    row.innerHTML = `<span class="ts">${ts}</span><span class="pid">8421-8421</span><span class="lv${L[0]}">${L[0]}</span><span>${L[1]}</span><span class="lv${L[0] === "W" ? "W" : ""}">${L[2]}</span>`;
+    const box = $("#logs"); box.append(row);
+    while (box.children.length > 7) box.firstChild.remove();
+  };
+  for (let k = 0; k < 4; k++) pushLog();
+  setInterval(pushLog, 1700);
+}
+
+// ===== Zonas (botones invisibles en porcentajes) =====
+const zbox = $("#zones");
+ZONAS.forEach((z, k) => {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "zone"; b.dataset.k = k; b.dataset.name = z.nombre;
+  Object.assign(b.style, { left: z.x + "%", top: z.y + "%", width: z.w + "%", height: z.h + "%" });
+  b.setAttribute("aria-label", `Región ${k + 1} de la interfaz`);
+  b.addEventListener("click", e => { e.stopPropagation(); tap(k, e); });
+  zbox.append(b);
+});
+frame.addEventListener("click", e => { if (mode === "ask") miss(e); });
+
+function place(el, z){ Object.assign(el.style, { left: z.x + "%", top: z.y + "%", width: z.w + "%", height: z.h + "%" }); }
+function showSpot(z, label, explore){
+  spot.classList.toggle("explore", !!explore);
+  spot.classList.toggle("below", z.y < 10 && z.h < 12);
+  place(spot, z);
+  $("#spotlab").textContent = label;
+  spot.classList.add("on");
+}
+function ripple(e){
+  const r = frame.getBoundingClientRect();
+  const d = document.createElement("span"); d.className = "ripple";
+  d.style.left = (e.clientX - r.left) + "px"; d.style.top = (e.clientY - r.top) + "px";
+  if (e.clientX) { frame.append(d); setTimeout(() => d.remove(), 650); }
+}
+
+// ===== HUD =====
+function pips(){
+  $("#pips").innerHTML = ZONAS.map((_, k) => {
+    const c = results[k] === true ? "first" : results[k] === false ? "retry" : (mode === "ask" || mode === "right") && k === cur ? "now" : "";
+    return `<span class="pip ${c}"></span>`;
+  }).join("");
+}
+function hud(html, step){ $("#hbody").innerHTML = html; $("#hstep").textContent = step; pips(); }
+
+function intro(){
+  mode = "intro"; frame.classList.add("idle"); frame.classList.remove("explore-on");
+  spot.classList.remove("on"); clearPins();
+  hud(`<p class="ask">Vas a recorrer las 6 zonas principales del IDE. Toca la parte correcta de la ventana en cada consigna.</p>
+       <div class="acts"><button class="btn" id="go" type="button">Comenzar recorrido</button></div>`, "Recorrido por Android Studio");
+  $("#go").addEventListener("click", start);
+}
+function start(){ cur = 0; results = []; frame.classList.remove("idle"); ask(); }
+
+function ask(){
+  mode = "ask"; fails = 0; hintUsed = false;
+  spot.classList.remove("on");
+  const z = ZONAS[cur];
+  hud(`<p class="ask">${z.consigna}</p>
+       <div class="acts"><button class="btn ghost sm" id="hint" type="button">Ver pista</button></div>
+       <p class="msg" id="msg"></p>`, `Consigna ${cur + 1} de ${ZONAS.length}`);
+  $("#hint").addEventListener("click", showHint);
+}
+function showHint(){
+  hintUsed = true;
+  const m = $("#msg"); if (!m) return;
+  m.className = "msg hint"; m.textContent = "Pista: " + ZONAS[cur].pista;
+}
+
+function tap(k, e){
+  if (mode === "explore"){ exploreAt(k); return; }
+  if (mode !== "ask") return;
+  ripple(e);
+  if (k === cur) right(); else wrong(k);
+}
+function miss(e){
+  ripple(e);
+  fails++;
+  const m = $("#msg"); m.className = "msg bad"; m.textContent = "Ahí no hay ninguna de las zonas que buscamos. Intenta de nuevo.";
+  beep(false);
+  if (fails >= 2 && !hintUsed) setTimeout(showHint, 700);
+}
+function wrong(k){
+  fails++;
+  const z = ZONAS[k];
+  const f = document.createElement("div"); f.className = "flash" + (z.y < 10 && z.h < 12 ? " below" : "");
+  place(f, z); f.innerHTML = `<span class="lab">${z.nombre}</span>`;
+  frame.append(f); setTimeout(() => f.remove(), 1850);
+  const m = $("#msg"); m.className = "msg bad"; m.textContent = `Eso es el ${z.nombre}. Lee de nuevo la consigna e intenta otra vez.`;
+  beep(false);
+  if (fails >= 2 && !hintUsed) setTimeout(showHint, 700);
+}
+function right(){
+  mode = "right";
+  const z = ZONAS[cur];
+  results[cur] = fails === 0;
+  beep(true);
+  showSpot(z, "✓ " + z.nombre);
+  scrollToZone(z);
+  const last = cur === ZONAS.length - 1;
+  hud(`<div class="okblock"><span class="okname"><i>✓</i>${z.nombre}</span><span class="expl">${z.explicacion}</span></div>
+       <div class="acts"><button class="btn" id="next" type="button">${last ? "Ver resultado" : "Siguiente"}<kbd>Enter</kbd></button></div>`,
+      `Consigna ${cur + 1} de ${ZONAS.length} · ${fails === 0 ? "al primer intento" : "con " + fails + (fails === 1 ? " error" : " errores")}`);
+  $("#next").addEventListener("click", next);
+  $("#next").focus({ preventScroll: true });
+}
+function next(){ if (cur < ZONAS.length - 1){ cur++; ask(); } else end(); }
+
+function end(){
+  mode = "end";
+  spot.classList.remove("on");
+  const good = results.filter(Boolean).length;
+  hud(`<span class="score">${good}/${ZONAS.length}</span>
+       <div class="okblock"><span class="okname">${good === ZONAS.length ? "Conoces el mapa del IDE" : "Recorrido completado"}</span>
+       <span class="expl">${good === ZONAS.length ? "Encontraste todas las zonas al primer intento." : `Acertaste ${good} zonas al primer intento. Las barras amarillas marcan las que te costaron: repásalas en el modo exploración.`}</span></div>
+       <div class="acts"><button class="btn" id="exp" type="button">Explorar la interfaz</button><button class="btn ghost" id="rep" type="button">Repetir</button></div>`,
+      "Resultado");
+  $("#exp").addEventListener("click", explore);
+  $("#rep").addEventListener("click", start);
+  try{ window.parent.postMessage({ type: "complete" }, "*"); }catch(e){}  // avisa a Rise que la actividad terminó
+}
+
+// ===== Modo exploración: todas las zonas numeradas =====
+function clearPins(){ document.querySelectorAll(".pin").forEach(p => p.remove()); }
+function explore(){
+  mode = "explore"; exploreSel = -1;
+  frame.classList.add("explore-on");
+  clearPins();
+  ZONAS.forEach((z, k) => {
+    const p = document.createElement("span"); p.className = "pin"; p.textContent = k + 1;
+    p.style.left = z.x + "%"; p.style.top = z.y + "%"; p.style.animationDelay = (k * .07) + "s";
+    if (z.h < 12) { p.style.margin = "4px"; p.style.width = p.style.height = "20px"; }
+    frame.append(p);
+  });
+  hud(`<p class="ask">Toca cualquier zona numerada para repasar qué es y para qué sirve.</p>
+       <div class="acts"><button class="btn ghost" id="rep" type="button">Repetir recorrido</button></div>`, "Modo exploración");
+  $("#rep").addEventListener("click", () => { frame.classList.remove("explore-on"); clearPins(); start(); });
+}
+function exploreAt(k){
+  const z = ZONAS[k];
+  showSpot(z, (k + 1) + " · " + z.nombre, true);
+  hud(`<div class="okblock"><span class="okname">${k + 1} · ${z.nombre}</span><span class="expl">${z.explicacion}</span></div>
+       <div class="acts"><button class="btn ghost" id="rep" type="button">Repetir recorrido</button></div>`, "Modo exploración");
+  $("#rep").addEventListener("click", () => { frame.classList.remove("explore-on"); clearPins(); start(); });
+}
+
+// En pantallas angostas, desplaza la ventana para que la zona acertada quede a la vista
+function scrollToZone(z){
+  const vp = $("#viewport");
+  if (vp.scrollWidth <= vp.clientWidth) return;
+  const cx = (z.x + z.w / 2) / 100 * frame.clientWidth;
+  vp.scrollTo({ left: cx - vp.clientWidth / 2, behavior: "smooth" });
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && mode === "right" && document.activeElement?.id !== "next"){ e.preventDefault(); next(); }
+});
+
+// ===== Modo edición (abrir la página con #editar) =====
+function editMode(){
+  if (location.hash !== "#editar") return;
+  mode = "edit"; frame.classList.remove("idle"); frame.classList.add("edit-on");
+  hud(`<p class="ask">Modo edición: arrastra sobre la imagen para medir una zona y copia los valores al arreglo ZONAS.</p>
+       <pre class="editout" id="eo">x: –, y: –, w: –, h: –</pre>
+       <div class="acts"><button class="btn sm" id="copy" type="button">Copiar valores</button></div>`, "Modo edición");
+  $("#copy").addEventListener("click", () => {
+    const t = $("#eo").textContent;
+    navigator.clipboard?.writeText(t).catch(() => {});
+    const r = document.createRange(); r.selectNodeContents($("#eo")); const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+  });
+  let d = null, box = null;
+  const pct = e => { const r = frame.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * 100, y: (e.clientY - r.top) / r.height * 100 }; };
+  zbox.style.pointerEvents = "none";
+  frame.addEventListener("pointerdown", e => {
+    d = pct(e); box?.remove(); box = document.createElement("div"); box.className = "draw"; frame.append(box);
+    frame.setPointerCapture(e.pointerId);
+  });
+  frame.addEventListener("pointermove", e => {
+    if (!d) return;
+    const p = pct(e), z = { x: Math.min(d.x, p.x), y: Math.min(d.y, p.y), w: Math.abs(p.x - d.x), h: Math.abs(p.y - d.y) };
+    place(box, z);
+    $("#eo").textContent = `x: ${z.x.toFixed(2)}, y: ${z.y.toFixed(2)}, w: ${z.w.toFixed(2)}, h: ${z.h.toFixed(2)}`;
+  });
+  frame.addEventListener("pointerup", () => { d = null; });
+}
+
+intro();
+editMode();
+addEventListener("hashchange", () => location.reload());
+</script>
+</body>
+</html>

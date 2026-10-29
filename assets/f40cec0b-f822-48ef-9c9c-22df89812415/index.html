@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quiz final OVA Kotlin</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+@font-face{font-family:"Unbounded";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/unbounded-500.woff2") format("woff2")}
+@font-face{font-family:"Unbounded";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/unbounded-700.woff2") format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/atkinson-hyperlegible-400.woff2") format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/atkinson-hyperlegible-700.woff2") format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/jetbrains-mono-400.woff2") format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/jetbrains-mono-500.woff2") format("woff2")}
+/* Sistema visual "Kotlin Lab": mundo del IDE oscuro con la paleta naranja-magenta-violeta de Kotlin; tema oscuro único por decisión */
+:root{
+  --bg:#13111c; --panel:#1b1828; --panel2:#231f35; --line:#302b47; --dot:#2a2640; --bezel:#0a0910;
+  --ink:#eeebf8; --muted:#a29cbf; --dim:#6f6990;
+  --kt1:#f05a4a; --kt2:#c711e1; --kt3:#7f52ff; --sky:#4fb6ff; --amber:#f5b335;
+  --grad:linear-gradient(100deg,var(--kt1),var(--kt2) 52%,var(--kt3));
+  --glow:rgba(127,82,255,.42);
+  --ok:#4fd18b; --ok-bg:#15301f; --bad:#ff6b5e; --bad-bg:#3a1a1c; --warn:#f5c451; --info:#8ab4ff;
+  --screen:#fbfaff; --screen2:#efebfb; --sink:#1d1a2b; --smuted:#5f5a78; --sline:#dcd7ef;
+  --sok:#18834a; --sok-bg:#e1f4e8; --sbad:#c3352a; --sbad-bg:#fde5e1; --snack:#2b2738;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"Cascadia Code",Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0}[hidden]{display:none!important}img{max-width:100%}
+body{background-color:var(--bg);background-image:radial-gradient(var(--dot) 1.2px,transparent 1.7px);background-size:22px 22px;color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+p,h1,h2,h3,ul,ol{margin:0}
+.wrap{max-width:1100px;margin:0 auto;padding-block:20px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:32px}
+.crumbs{font-family:var(--f-mono);font-size:12px;color:var(--dim);display:flex;gap:6px;align-items:center;padding:8px 12px;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow-x:auto;white-space:nowrap}
+.crumbs .file{color:var(--ink);display:inline-flex;align-items:center;gap:6px}
+.crumbs .file::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--grad)}
+.hero{display:flex;flex-direction:column;gap:14px;max-width:780px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+.eyebrow b{font-weight:500;color:var(--kt1)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,6.2vw,56px);line-height:1.02;letter-spacing:-.025em;text-wrap:balance}
+h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--muted);max-width:58ch;font-size:17px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--f-mono);font-size:12px;padding:5px 10px;border-radius:6px;background:var(--panel);border:1px solid var(--line);color:var(--muted)}
+.btn{font:inherit;font-weight:700;font-size:15px;min-height:46px;padding:12px 24px;border-radius:999px;border:0;cursor:pointer;color:#fff;background:var(--grad);background-size:170% 100%;background-position:0 0;transition:background-position .45s ease,transform .12s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover:not(:disabled){background-position:100% 0}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.ghost:hover:not(:disabled){box-shadow:inset 0 0 0 1.5px var(--kt3)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+.mono{font-family:var(--f-mono)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.92)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* Layout: ventana de IDE — barra de ejecución, tareas de Gradle a la izquierda, editor con la pregunta, consola Build abajo; al compilar aparece la APK firmada */
+.ide{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 40px 90px -40px var(--glow)}
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line);font-family:var(--f-mono);font-size:12px}
+.toolbar .proj{display:flex;align-items:center;gap:8px;color:var(--ink)}
+.toolbar .proj::before{content:"";width:18px;height:18px;border-radius:5px;background:var(--grad)}
+.toolbar .cfg{padding:5px 10px;border-radius:6px;background:var(--panel2);color:var(--muted)}
+.toolbar .spacer{flex:1}
+.runbtn{font:inherit;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:6px;border:0;background:var(--ok-bg);color:var(--ok);cursor:pointer;font-weight:500}
+.runbtn:disabled{opacity:.4;cursor:not-allowed}
+.runbtn::before{content:"";width:0;height:0;border-left:8px solid currentColor;border-top:5px solid transparent;border-bottom:5px solid transparent}
+.clock{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;background:var(--panel2);color:var(--ink);font-variant-numeric:tabular-nums}
+.clock.low{color:var(--bad);background:var(--bad-bg)}
+
+.main{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:520px}
+@media (max-width:760px){.main{grid-template-columns:minmax(0,1fr)}}
+.tasks{border-right:1px solid var(--line);padding:12px 8px;display:flex;flex-direction:column;gap:2px;background:var(--bg)}
+.tasks .h{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);padding:4px 10px 10px}
+.task{font:inherit;display:grid;grid-template-columns:18px 1fr;gap:10px;align-items:start;text-align:left;padding:9px 10px;border-radius:8px;border:0;background:transparent;color:var(--muted);cursor:pointer}
+.task:hover:not(:disabled){background:var(--panel2)}
+.task:disabled{cursor:default}
+.task .st{width:14px;height:14px;margin-top:3px;border-radius:50%;border:2px solid var(--dim)}
+.task.done .st{background:var(--kt3);border-color:var(--kt3)}
+.task.ok .st{background:var(--ok);border-color:var(--ok)}
+.task.bad .st{background:var(--bad);border-color:var(--bad)}
+.task.here{background:var(--panel2);color:var(--ink);box-shadow:inset 2px 0 0 var(--kt1)}
+.task .tn{font-family:var(--f-mono);font-size:12.5px;display:block;color:inherit}
+.task small{display:block;font-size:12px;color:var(--dim);line-height:1.3;margin-top:2px}
+@media (max-width:760px){
+  .tasks{border-right:0;border-bottom:1px solid var(--line);flex-direction:row;overflow-x:auto;padding:8px;gap:6px}
+  .tasks .h{display:none}
+  .task{grid-template-columns:14px auto;padding:8px 10px;white-space:nowrap;align-items:center}
+  .task .st{margin-top:0;width:12px;height:12px}
+  .task small{display:none}
+  .task.here{box-shadow:inset 0 -2px 0 var(--kt1)}
+}
+
+.editor{display:flex;flex-direction:column;min-width:0}
+.etabs{display:flex;border-bottom:1px solid var(--line);font-family:var(--f-mono);font-size:12px}
+.etabs span{padding:9px 14px;color:var(--dim)}
+.etabs .on{color:var(--ink);background:var(--bg);border-bottom:2px solid var(--kt3)}
+.code{flex:1;display:grid;grid-template-columns:46px minmax(0,1fr);background:var(--bg)}
+.gutter{contain:size;font-family:var(--f-mono);font-size:12px;line-height:28px;color:var(--dim);text-align:right;padding:18px 12px 0 0;overflow:hidden;border-right:1px solid var(--line);user-select:none;opacity:.7}
+.src{padding:18px clamp(14px,3vw,30px) 26px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.src>*{animation:rise .3s ease both}
+.cm{font-family:var(--f-mono);font-size:13px;color:#7f8c74;line-height:1.7;overflow-wrap:anywhere}
+.kw{font-family:var(--f-mono);font-size:14px;color:var(--ink);line-height:1.7;overflow-wrap:anywhere}
+.kw .k{color:#f07c4f} .kw .f{color:#7fc4ff} .kw .s{color:#8fd18b} .kw .p{color:#c79bff}
+.qq{font-family:var(--f-display);font-weight:500;font-size:clamp(19px,2.6vw,24px);line-height:1.3;letter-spacing:-.01em;text-wrap:balance;padding:6px 0 4px}
+.branches{display:flex;flex-direction:column;gap:8px;padding-left:clamp(10px,3vw,28px)}
+.br{font:inherit;display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center;text-align:left;width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;transition:border-color .15s,background .15s,transform .12s}
+.br .bk{font-family:var(--f-mono);font-size:14px;color:var(--kt1);white-space:nowrap}
+.br:hover{border-color:var(--kt3);transform:translateX(3px)}
+.br[aria-pressed="true"]{border-color:var(--kt3);background:var(--panel2);box-shadow:0 0 0 3px rgba(127,82,255,.22)}
+.br[aria-pressed="true"] .bk{color:var(--ok)}
+.br[aria-pressed="true"] .bk::after{content:" ●";color:var(--kt3)}
+.nav{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding-top:10px}
+.nav .end{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}
+.confirm{border:1.5px dashed var(--warn);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:12px;background:rgba(245,196,81,.06)}
+.confirm p{color:var(--ink)}
+.confirm .end{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.rules{display:flex;flex-direction:column;gap:2px}
+
+.console{border-top:1px solid var(--line);background:var(--bezel)}
+.console .etabs{background:var(--panel)}
+.out{font-family:var(--f-mono);font-size:12.5px;line-height:1.75;padding:12px 16px;height:220px;overflow:auto;margin:0;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted)}
+.out .ok{color:var(--ok)} .out .bad{color:var(--bad)} .out .wa{color:var(--warn)} .out .hi{color:var(--ink)} .out .dim{color:var(--dim)}
+.out .big{font-weight:500}
+.out .ln{animation:rise .2s ease both;display:block}
+
+/* --- Resultado --- */
+.result{display:flex;flex-direction:column;gap:28px}
+.result>*{animation:rise .45s ease both}
+.verdict{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 28px}
+.nota{font-family:var(--f-display);font-weight:700;font-size:clamp(72px,16vw,132px);line-height:.9;letter-spacing:-.04em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
+.verdict .side{display:flex;flex-direction:column;gap:8px;padding-bottom:8px;min-width:0}
+.badge{align-self:flex-start;font-family:var(--f-mono);font-size:12px;font-weight:500;padding:5px 10px;border-radius:6px}
+.badge.ok{background:var(--ok-bg);color:var(--ok)} .badge.bad{background:var(--bad-bg);color:var(--bad)}
+.verdict h2{font-family:var(--f-display);font-weight:500;font-size:clamp(20px,3vw,26px);letter-spacing:-.01em}
+.verdict p{color:var(--muted);max-width:52ch}
+
+.apk{display:grid;grid-template-columns:minmax(0,240px) minmax(0,1fr);gap:0;background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+@media (max-width:680px){.apk{grid-template-columns:minmax(0,1fr)}}
+.home{background:linear-gradient(160deg,#2a1f4f,#1a1530 55%,#3a1638);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:30px 16px;position:relative;min-height:240px}
+.home .grid{display:grid;grid-template-columns:repeat(3,44px);gap:16px}
+.home .grid i{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.08)}
+.home .me{width:44px;height:44px;border-radius:14px;background:var(--grad);display:grid;place-items:center;color:#fff;font-family:var(--f-mono);font-size:16px;font-weight:500;box-shadow:0 0 0 3px rgba(255,255,255,.85),0 10px 30px -6px var(--kt2);animation:pop .6s .4s ease both}
+.home .lbl{font-family:var(--f-mono);font-size:11px;color:#e9e4ff}
+.home .toast{font-size:12px;background:rgba(0,0,0,.45);color:#fff;padding:5px 12px;border-radius:999px}
+.sheet{padding:24px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.sheet .eyebrow{color:var(--kt1)}
+.sheet h3{font-family:var(--f-display);font-weight:500;font-size:20px;letter-spacing:-.01em}
+.props{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 18px;font-family:var(--f-mono);font-size:13px}
+.props dt{color:var(--dim)} .props dd{margin:0;color:var(--ink);overflow-wrap:anywhere}
+.props dd.signer{font-family:var(--f-display);font-size:17px;font-weight:500;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:14px;color:var(--muted)}
+.field input{font:inherit;padding:11px 13px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);max-width:100%}
+.field input:focus{border-color:var(--kt3);outline:none;box-shadow:0 0 0 3px rgba(127,82,255,.25)}
+
+.problems{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.problems .etabs{background:var(--panel)}
+.plist{list-style:none;padding:0}
+.plist li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px;padding:16px 18px;border-top:1px solid var(--line)}
+.plist .i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--bg);margin-top:2px}
+.plist .i.ok{background:var(--ok)} .plist .i.bad{background:var(--bad)}
+.plist .b{display:flex;flex-direction:column;gap:5px;min-width:0}
+.plist strong{font-weight:700}
+.plist .m{font-size:14px;color:var(--muted)}
+.plist .loc{font-family:var(--f-mono);font-size:12px;color:var(--kt1)}
+.again{display:flex;justify-content:flex-end}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="crumbs"><span>OVA_Kotlin</span><span>›</span><span>app</span><span>›</span><span>src</span><span>›</span><span>main</span><span>›</span><span class="file">QuizFinal.kt</span></div>
+
+  <header class="hero">
+    <div class="eyebrow"><span>OVA 1 · Desarrollo móvil con Kotlin</span><b>Actividad 1.5</b></div>
+    <h1>Compila tu <em>conocimiento</em></h1>
+    <p class="lead">Quiz final del OVA. Cada pregunta es una tarea de Gradle: respóndelas todas y ejecuta el build. Si apruebas, obtienes tu APK firmada con tu nombre como constancia.</p>
+    <div class="chips"><span class="chip">5 preguntas</span><span class="chip">15:00 min</span><span class="chip">Nota sobre 5.0</span><span class="chip">Aprueba con 3.0</span></div>
+  </header>
+
+  <section class="ide">
+    <div class="toolbar">
+      <span class="proj">OVA_Kotlin</span>
+      <span class="cfg">app · release</span>
+      <span class="spacer"></span>
+      <span class="clock" id="clock" title="Tiempo restante">15:00</span>
+      <button class="runbtn" id="run" type="button">Ejecutar</button>
+    </div>
+    <div class="main">
+      <nav class="tasks" id="tasks" aria-label="Preguntas"><span class="h">Gradle · tareas</span></nav>
+      <div class="editor">
+        <div class="etabs"><span class="on">QuizFinal.kt</span><span>build.gradle.kts</span></div>
+        <div class="code">
+          <div class="gutter" id="gutter" aria-hidden="true"></div>
+          <div class="src" id="src"></div>
+        </div>
+      </div>
+    </div>
+    <div class="console">
+      <div class="etabs"><span class="on">Build</span><span>Logcat</span></div>
+      <pre class="out" id="out" role="log" aria-label="Salida de compilación"></pre>
+    </div>
+  </section>
+
+  <section class="result" id="result" hidden></section>
+</div>
+
+<script>
+const C = {"act": "Actividad 1.5", "title": "Quiz de verificación final", "lead": "Evaluación de cierre del OVA 1. Responde basándote en los contenidos que estudiaste en los cuatro subtemas.", "meta": ["5 preguntas", "15 minutos", "Nota sobre 5.0", "Aprueba con 3.0"], "steps": ["Elige una respuesta por pregunta. Puedes moverte entre preguntas y cambiar tus respuestas antes de entregar.", "Tienes 15 minutos. Si se acaba el tiempo, se califica lo que alcanzaste a marcar.", "Las preguntas sin responder cuentan como incorrectas.", "Al entregar verás tu nota, la revisión de cada pregunta y, si apruebas, tu constancia."], "code": "val nota: Double = evaluar()", "minutes": 15, "instant": false, "pass": 0.6, "questions": [{"q": "¿Qué empresa creó el lenguaje Kotlin y qué empresa lo adoptó oficialmente para Android?", "opts": ["Microsoft lo creó y Apple lo adoptó.", "JetBrains lo creó y Google lo adoptó oficialmente.", "Google lo creó y Oracle lo adoptó.", "Facebook lo creó y Google lo adoptó."], "correct": 1, "why": "Kotlin es obra de JetBrains, la misma empresa detrás de IntelliJ IDEA. Google lo declaró lenguaje oficial de Android en 2017.", "topic": "Subtema 1.2 · ¿Qué es Kotlin?"}, {"q": "¿Cuál de las siguientes es una característica propia del lenguaje Kotlin?", "opts": ["Requiere escribir código extenso y complejo para tareas simples.", "Manejo seguro de nulos (Null Safety) e interoperabilidad con Java.", "Funciona únicamente en sistemas operativos Windows.", "No requiere de un IDE para ser compilado."], "correct": 1, "why": "Kotlin protege contra referencias nulas desde el sistema de tipos y puede convivir con código Java dentro del mismo proyecto.", "topic": "Subtema 1.2 · ¿Qué es Kotlin?"}, {"q": "¿Cuál es la función del archivo AndroidManifest.xml en un proyecto Android?", "opts": ["Dibujar la interfaz de usuario con botones y colores.", "Declarar la configuración central, permisos y componentes de la app.", "Guardar las fotos tomadas por la cámara.", "Compilar el código Kotlin a lenguaje máquina."], "correct": 1, "why": "El manifiesto describe los componentes de la app, los permisos que pide (cámara, internet) y la versión de Android que necesita.", "topic": "Subtema 1.4 · Elementos básicos de una app"}, {"q": "¿Qué herramienta dentro de Android Studio se utiliza para ejecutar y probar la aplicación en la computadora?", "opts": ["Gradle.", "Emulador de Android (AVD - Android Virtual Device).", "Editor de texto.", "Servidor Apache."], "correct": 1, "why": "El emulador simula teléfonos, tabletas o relojes en la computadora. Gradle compila el proyecto, pero no lo ejecuta en un dispositivo.", "topic": "Subtema 1.3 · ¿Qué es Android Studio?"}, {"q": "¿Qué ventaja principal tiene el desarrollo nativo frente al desarrollo híbrido?", "opts": ["Utiliza un solo código para todas las plataformas sin cambios.", "Ofrece un rendimiento óptimo y acceso completo a las funciones del dispositivo.", "No requiere pruebas de software.", "Es más lento de ejecutar pero más barato."], "correct": 1, "why": "Al usar el lenguaje y las herramientas propias de Android, la app nativa aprovecha todo el hardware y las APIs del sistema con el mejor rendimiento.", "topic": "Subtema 1.1 · ¿Qué es el desarrollo móvil?"}]};
+const $ = s => document.querySelector(s);
+const L = "abcd";
+const n = C.questions.length;
+let i = 0, ans = [], timeLeft = C.minutes * 60, tick = null, state = "idle", startedAt = 0;
+
+const esc = t => { const d = document.createElement("div"); d.textContent = t; return d.innerHTML; };
+const pad = v => String(v).padStart(2, "0");
+$("#gutter").innerHTML = Array.from({ length: 60 }, (_, k) => k + 1).join("<br>");
+
+function beep(ok){
+  try{
+    const a = beep.ctx = beep.ctx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = a.createOscillator(), g = a.createGain();
+    o.frequency.setValueAtTime(ok ? 660 : 220, a.currentTime);
+    if (ok) o.frequency.setValueAtTime(880, a.currentTime + .09);
+    g.gain.setValueAtTime(.12, a.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, a.currentTime + .28);
+    o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime + .3);
+  }catch(e){}
+}
+
+// --- Consola Build: escribe una línea con una clase de color ---
+function out(text, cls = ""){
+  const s = document.createElement("span");
+  s.className = "ln " + cls; s.textContent = text;
+  const o = $("#out"); o.append(s); o.scrollTop = o.scrollHeight;
+}
+
+// --- Lista de tareas (una por pregunta) ---
+function renderTasks(){
+  const nav = $("#tasks");
+  nav.querySelectorAll(".task").forEach(t => t.remove());
+  C.questions.forEach((q, k) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "task";
+    if (state === "graded") b.classList.add(ans[k] === q.correct ? "ok" : "bad");
+    else if (ans[k] !== null) b.classList.add("done");
+    if (state === "running" && k === i) b.classList.add("here");
+    b.disabled = state !== "running";
+    b.innerHTML = `<span class="st"></span><span><span class="tn">:pregunta${k+1}</span><small>${esc(q.topic)}</small></span>`;
+    b.addEventListener("click", () => { i = k; render(); });
+    nav.append(b);
+  });
+}
+
+// --- Editor: pantalla inicial ---
+function intro(){
+  state = "idle";
+  $("#src").innerHTML = `
+    <div class="cm">/**<br> * Quiz final · OVA 1<br> * Iniciación en el desarrollo móvil con Kotlin<br> */</div>
+    <div class="cm rules">${C.steps.map(s => "// " + esc(s)).join("<br>")}</div>
+    <div class="kw"><span class="k">fun</span> <span class="f">main</span>() {<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">val</span> nota: <span class="p">Double</span> = <span class="f">evaluar</span>(preguntas = <span class="p">${n}</span>, minutos = <span class="p">${C.minutes}</span>)<br>}</div>
+    <div class="nav"><button class="btn" id="go" type="button">Ejecutar quiz</button></div>`;
+  $("#go").addEventListener("click", start);
+  $("#run").disabled = false; $("#run").textContent = "Ejecutar";
+  $("#clock").textContent = `${C.minutes}:00`; $("#clock").classList.remove("low");
+  renderTasks();
+}
+
+function start(){
+  if (state === "running") return;
+  ans = Array(n).fill(null); i = 0; timeLeft = C.minutes * 60; startedAt = Date.now();
+  state = "running";
+  $("#result").hidden = true; $("#result").innerHTML = "";
+  $("#out").innerHTML = "";
+  out("> Configure project :app", "hi");
+  out(`Quiz iniciado. Tienes ${C.minutes} minutos para resolver ${n} tareas.`, "dim");
+  $("#run").disabled = true;
+  clearInterval(tick); tick = setInterval(stepTimer, 1000);
+  updClock(); render();
+}
+function stepTimer(){
+  timeLeft--; updClock();
+  if (timeLeft === 60) out("w: Queda 1 minuto.", "wa");
+  if (timeLeft <= 0){ clearInterval(tick); out("w: Tiempo agotado. Compilando lo que alcanzaste a responder…", "wa"); grade(); }
+}
+function updClock(){
+  const t = Math.max(0, timeLeft);
+  $("#clock").textContent = `${Math.floor(t/60)}:${pad(t%60)}`;
+  $("#clock").classList.toggle("low", t <= 60);
+}
+
+// --- Editor: una pregunta como función con un "when" ---
+function render(){
+  const q = C.questions[i];
+  const last = i === n - 1;
+  $("#src").innerHTML = `
+    <div class="cm">// Pregunta ${i+1} de ${n} · ${esc(q.topic)}</div>
+    <div class="kw"><span class="k">fun</span> <span class="f">pregunta${i+1}</span>(): <span class="p">Respuesta</span> {</div>
+    <h2 class="qq">${esc(q.q)}</h2>
+    <div class="kw">&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">return when</span> (tuEleccion) {</div>
+    <div class="branches">${q.opts.map((o, k) =>
+      `<button type="button" class="br" data-k="${k}" aria-pressed="${ans[i] === k}"><span class="bk">${L[k]} -&gt;</span><span>${esc(o)}</span></button>`).join("")}</div>
+    <div class="kw">&nbsp;&nbsp;&nbsp;&nbsp;}<br>}</div>
+    <div class="confirm" id="confirm" hidden></div>
+    <div class="nav">
+      <button class="btn ghost" id="prev" type="button" ${i === 0 ? "disabled" : ""}>Anterior</button>
+      <div class="end">
+        ${last ? "" : `<button class="btn ghost" id="next" type="button">Siguiente</button>`}
+        <button class="btn" id="build" type="button">Compilar y entregar</button>
+      </div>
+    </div>`;
+  document.querySelectorAll(".br").forEach(b => b.addEventListener("click", () => {
+    ans[i] = +b.dataset.k;
+    out(`> Task :app:pregunta${i+1}  opción ${L[ans[i]]} guardada`, "dim");
+    render();
+  }));
+  $("#prev").addEventListener("click", () => { i--; render(); });
+  if (!last) $("#next").addEventListener("click", () => { i++; render(); });
+  $("#build").addEventListener("click", confirmBuild);
+  renderTasks();
+}
+
+function confirmBuild(){
+  const missing = ans.filter(a => a === null).length;
+  const box = $("#confirm");
+  box.hidden = false;
+  box.innerHTML = `<p>${missing
+      ? `Te faltan ${missing} pregunta${missing > 1 ? "s" : ""}. Las tareas sin respuesta fallan en el build. ¿Compilar de todos modos?`
+      : "Todas las tareas tienen respuesta. Al compilar ya no podrás cambiarlas."}</p>
+    <div class="end"><button class="btn ghost" id="keep" type="button">Seguir revisando</button><button class="btn" id="go2" type="button">Compilar ahora</button></div>`;
+  $("#keep").addEventListener("click", () => { box.hidden = true; });
+  $("#go2").addEventListener("click", grade);
+  $("#go2").focus();
+}
+
+// --- Calificar: la consola "compila" línea por línea ---
+function grade(){
+  if (state !== "running") return;
+  state = "building"; clearInterval(tick);
+  renderTasks();
+  $("#src").innerHTML = `<div class="cm">// Compilando QuizFinal.kt…</div>`;
+  const score = C.questions.reduce((s, q, k) => s + (ans[k] === q.correct ? 1 : 0), 0);
+  const passed = score / n >= C.pass;
+  const secs = Math.round((Date.now() - startedAt) / 1000);
+  const lines = [["> Task :app:preBuild", "hi"], ["> Task :app:compileRespuestasKotlin", "hi"]];
+  C.questions.forEach((q, k) => {
+    const ok = ans[k] === q.correct;
+    lines.push([`> Task :app:verificarPregunta${k+1}  ${ok ? "OK" : "FAILED"}`, ok ? "ok" : "bad"]);
+    if (!ok) lines.push([`e: QuizFinal.kt:(${k+1}, 1): ${ans[k] === null ? "pregunta sin responder" : "respuesta incorrecta"}. Repasa ${q.topic}`, "bad"]);
+  });
+  if (passed) lines.push(["> Task :app:assembleRelease", "hi"], ["> Task :app:signRelease  ova1-kotlin-release.apk", "hi"]);
+  lines.push(["", ""], [`BUILD ${passed ? "SUCCESSFUL" : "FAILED"} in ${Math.floor(secs/60)}m ${secs%60}s`, (passed ? "ok" : "bad") + " big"],
+             [`${n} tareas verificadas: ${score} OK, ${n - score} FAILED`, "dim"]);
+  let k = 0;
+  (function next(){
+    if (k < lines.length){ out(lines[k][0], lines[k][1]); k++; setTimeout(next, 230); }
+    else { state = "graded"; renderTasks(); beep(passed); showResult(score, passed, secs); }
+  })();
+}
+
+function showResult(score, passed, secs){
+  try{ window.parent.postMessage({ type: "complete" }, "*"); }catch(e){}  // avisa a Rise que la actividad terminó
+  const nota = (score / n * 5).toFixed(1);
+  const hoy = new Date().toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" });
+  $("#src").innerHTML = `<div class="cm">// Build ${passed ? "exitoso" : "fallido"}. Revisa el resultado debajo de la ventana.</div>`;
+  $("#run").disabled = false; $("#run").textContent = "Ejecutar de nuevo";
+
+  const r = $("#result");
+  r.innerHTML = `
+    <div class="verdict">
+      <div class="nota" aria-label="Nota ${nota} de 5.0">${nota}</div>
+      <div class="side">
+        <span class="badge ${passed ? "ok" : "bad"}">BUILD ${passed ? "SUCCESSFUL" : "FAILED"} · ${score}/${n}</span>
+        <h2>${passed ? "Completaste el OVA 1" : "Aún te falta un poco"}</h2>
+        <p>${passed ? "Tu nota está sobre 5.0. Asimilaste los conceptos base del desarrollo móvil con Kotlin." : "Necesitas 3.0 para aprobar. Revisa los problemas que marcó el compilador y vuelve a ejecutar el quiz."}</p>
+      </div>
+    </div>
+    ${passed ? `
+    <div class="apk">
+      <div class="home" aria-hidden="true">
+        <div class="grid"><i></i><i></i><i></i><i></i><span class="me">?:</span><i></i></div>
+        <span class="lbl">OVA 1 Kotlin</span>
+        <span class="toast">App instalada</span>
+      </div>
+      <div class="sheet">
+        <span class="eyebrow">Constancia simbólica</span>
+        <h3>Tu APK está firmada</h3>
+        <dl class="props">
+          <dt>archivo</dt><dd>ova1-kotlin-release.apk</dd>
+          <dt>firmado por</dt><dd class="signer" id="signer">Escribe tu nombre</dd>
+          <dt>curso</dt><dd>Iniciación en el desarrollo móvil con Kotlin</dd>
+          <dt>nota</dt><dd>${nota} / 5.0</dd>
+          <dt>fecha</dt><dd>${hoy}</dd>
+        </dl>
+        <div class="field"><label for="name">Firma la APK con tu nombre</label>
+          <input id="name" type="text" maxlength="60" placeholder="Nombre y apellido" autocomplete="name"></div>
+      </div>
+    </div>` : ""}
+    <div class="problems">
+      <div class="etabs"><span class="on">Problems</span><span>${n - score} errores</span></div>
+      <ul class="plist">${C.questions.map((q, k) => {
+        const ok = ans[k] === q.correct;
+        const tuya = ans[k] === null ? "Sin responder" : `Tu respuesta: ${L[ans[k]]}) ${q.opts[ans[k]]}`;
+        return `<li><span class="i ${ok ? "ok" : "bad"}">${ok ? "✓" : "✗"}</span><div class="b">
+          <span class="loc">QuizFinal.kt · pregunta${k+1}</span>
+          <strong>${esc(q.q)}</strong>
+          <span class="m">${esc(tuya)}</span>
+          ${ok ? "" : `<span class="m">Correcta: ${L[q.correct]}) ${esc(q.opts[q.correct])}</span>`}
+          <span class="m">${esc(q.why)}</span></div></li>`;
+      }).join("")}</ul>
+    </div>
+    <div class="again"><button class="btn" id="again" type="button">Ejecutar de nuevo</button></div>`;
+  r.hidden = false;
+  r.scrollIntoView({ behavior: "smooth", block: "start" });
+  const inp = $("#name");
+  if (inp) inp.addEventListener("input", () => { $("#signer").textContent = inp.value.trim() || "Escribe tu nombre"; });
+  $("#again").addEventListener("click", () => { window.scrollTo({ top: 0, behavior: "smooth" }); start(); });
+}
+
+$("#run").addEventListener("click", start);
+out("Esperando ejecución. Pulsa Ejecutar para empezar el quiz.", "dim");
+intro();
+</script>
+</body>
+</html>

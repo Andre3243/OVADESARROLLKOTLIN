@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pareo de conceptos Android</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+@font-face{font-family:"Unbounded";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/unbounded-500.woff2") format("woff2")}
+@font-face{font-family:"Unbounded";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/unbounded-700.woff2") format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/atkinson-hyperlegible-400.woff2") format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/atkinson-hyperlegible-700.woff2") format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/jetbrains-mono-400.woff2") format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/jetbrains-mono-500.woff2") format("woff2")}
+/* Sistema visual "Kotlin Lab": mundo del IDE oscuro con la paleta naranja-magenta-violeta de Kotlin; tema oscuro único por decisión */
+:root{
+  --bg:#13111c; --panel:#1b1828; --panel2:#231f35; --line:#302b47; --dot:#2a2640; --bezel:#0a0910;
+  --ink:#eeebf8; --muted:#a29cbf; --dim:#6f6990;
+  --kt1:#f05a4a; --kt2:#c711e1; --kt3:#7f52ff; --sky:#4fb6ff; --amber:#f5b335;
+  --grad:linear-gradient(100deg,var(--kt1),var(--kt2) 52%,var(--kt3));
+  --glow:rgba(127,82,255,.42);
+  --ok:#4fd18b; --ok-bg:#15301f; --bad:#ff6b5e; --bad-bg:#3a1a1c; --warn:#f5c451; --info:#8ab4ff;
+  --screen:#fbfaff; --screen2:#efebfb; --sink:#1d1a2b; --smuted:#5f5a78; --sline:#dcd7ef;
+  --sok:#18834a; --sok-bg:#e1f4e8; --sbad:#c3352a; --sbad-bg:#fde5e1; --snack:#2b2738;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"Cascadia Code",Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0}[hidden]{display:none!important}img{max-width:100%}
+body{background-color:var(--bg);background-image:radial-gradient(var(--dot) 1.2px,transparent 1.7px);background-size:22px 22px;color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+p,h1,h2,h3,ul,ol{margin:0}
+.wrap{max-width:1100px;margin:0 auto;padding-block:20px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:32px}
+.crumbs{font-family:var(--f-mono);font-size:12px;color:var(--dim);display:flex;gap:6px;align-items:center;padding:8px 12px;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow-x:auto;white-space:nowrap}
+.crumbs .file{color:var(--ink);display:inline-flex;align-items:center;gap:6px}
+.crumbs .file::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--grad)}
+.hero{display:flex;flex-direction:column;gap:14px;max-width:780px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+.eyebrow b{font-weight:500;color:var(--kt1)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,6.2vw,56px);line-height:1.02;letter-spacing:-.025em;text-wrap:balance}
+h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--muted);max-width:58ch;font-size:17px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--f-mono);font-size:12px;padding:5px 10px;border-radius:6px;background:var(--panel);border:1px solid var(--line);color:var(--muted)}
+.btn{font:inherit;font-weight:700;font-size:15px;min-height:46px;padding:12px 24px;border-radius:999px;border:0;cursor:pointer;color:#fff;background:var(--grad);background-size:170% 100%;background-position:0 0;transition:background-position .45s ease,transform .12s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover:not(:disabled){background-position:100% 0}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.ghost:hover:not(:disabled){box-shadow:inset 0 0 0 1.5px var(--kt3)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+.mono{font-family:var(--f-mono)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.92)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* Layout: tablero tipo editor de navegación; nodos de términos a la izquierda, definiciones a la derecha, cables SVG entre ambos */
+:root{--c1:#f05a4a;--c2:#e042e8;--c3:#9a78ff;--c4:#4fb6ff;--c5:#f5b335}
+.workspace{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.ws-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line);font-family:var(--f-mono);font-size:12px;color:var(--dim)}
+.ws-bar .tab{color:var(--ink);border-bottom:2px solid var(--kt3);padding-bottom:2px}
+.ws-bar .count{margin-left:auto;color:var(--muted);font-variant-numeric:tabular-nums}
+.ws-bar .count b{color:var(--ink);font-weight:500}
+.board{position:relative;display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:clamp(44px,11vw,150px);padding:28px clamp(14px,3vw,32px);
+  background-color:var(--bg);
+  background-image:linear-gradient(var(--dot) 1px,transparent 1px),linear-gradient(90deg,var(--dot) 1px,transparent 1px);
+  background-size:28px 28px}
+.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:visible}
+.col{position:relative;z-index:2;display:flex;flex-direction:column;gap:14px;justify-content:space-around;min-width:0}
+.col-h{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+
+.node{position:relative;background:var(--panel2);border:1.5px solid var(--line);border-radius:12px;color:var(--ink);font:inherit;text-align:left;transition:border-color .15s,box-shadow .2s,transform .15s}
+.port{position:absolute;top:50%;width:16px;height:16px;margin-top:-8px;border-radius:50%;background:var(--bg);border:2.5px solid var(--dim);transition:background .15s,border-color .15s,transform .15s}
+.term{display:flex;align-items:center;gap:10px;padding:14px 18px 14px 12px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;min-height:58px}
+.term .port{right:-9px}
+.term .num{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-family:var(--f-mono);font-size:13px;font-weight:500;color:var(--bg);background:var(--cc)}
+.term .name{font-weight:700;line-height:1.25;min-width:0;overflow-wrap:anywhere}
+.term:hover:not(:disabled){border-color:var(--cc)}
+.term.linked .port{background:var(--cc);border-color:var(--cc)}
+.term.sel{border-color:var(--cc);box-shadow:0 0 0 4px color-mix(in srgb,var(--cc) 25%,transparent),0 10px 30px -10px var(--cc);transform:translateX(4px)}
+.term.sel .port{transform:scale(1.3);border-color:var(--cc)}
+.term.dragging{cursor:grabbing}
+
+.def{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;padding:12px 14px 12px 20px;cursor:pointer;min-height:58px}
+.def .port{left:-9px}
+.def .let{font-family:var(--f-display);font-weight:700;font-size:20px;line-height:1.1;color:var(--muted)}
+.def .txt{font-size:15px;line-height:1.42;min-width:0;color:var(--muted)}
+.def.linked{border-color:color-mix(in srgb,var(--cc) 60%,var(--line))}
+.def.linked .txt{color:var(--ink)}
+.def.linked .let{color:var(--cc)}
+.def.linked .port{background:var(--cc);border-color:var(--cc)}
+.def.target,.def:hover{border-color:var(--kt3)}
+.def.target{box-shadow:0 0 0 4px rgba(127,82,255,.25)}
+.board.picking .def:not(.linked) .port{border-color:var(--kt3);animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.35)}}
+.def.ok{border-color:var(--ok);background:var(--ok-bg)} .def.ok .let{color:var(--ok)}
+.def.bad{border-color:var(--bad);background:var(--bad-bg)} .def.bad .let{color:var(--bad)}
+.checked .term,.checked .def{cursor:default}
+
+@media (max-width:600px){
+  .board{gap:38px;padding:20px 12px}
+  .term{padding:10px 14px 10px 9px;gap:8px;min-height:52px}.term .name{font-size:14px}.term .num{width:24px;height:24px;font-size:12px}
+  .def{padding:10px 10px 10px 16px;gap:8px}.def .txt{font-size:13.5px}.def .let{font-size:16px}
+}
+
+.wire{fill:none;stroke-width:3.2;stroke-linecap:round;transition:stroke .3s}
+.wire.temp{stroke-dasharray:6 7;animation:flow .6s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-13}}
+.wire.ok{stroke:var(--ok)} .wire.bad{stroke:var(--bad);stroke-dasharray:7 6}
+.wire.draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw .45s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+.dock{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;padding:14px;border-top:1px solid var(--line)}
+.dock .end{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}
+.hint{font-size:14px;color:var(--muted);max-width:52ch}
+.sync{display:none;align-items:flex-start;gap:12px;padding:14px 16px;border-top:1px solid var(--line);animation:rise .3s ease both}
+.sync.show{display:flex}
+.sync .ic{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:var(--bg)}
+.sync.ok{background:var(--ok-bg)} .sync.ok .ic{background:var(--ok)}
+.sync.bad{background:var(--bad-bg)} .sync.bad .ic{background:var(--bad)}
+.sync strong{display:block;font-family:var(--f-display);font-weight:500;font-size:17px}
+.sync span{color:var(--muted);font-size:15px}
+.mono-s{font-family:var(--f-mono);font-size:12px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="crumbs"><span>OVA_Kotlin</span><span>›</span><span>app</span><span>›</span><span>res</span><span>›</span><span>navigation</span><span>›</span><span class="file">actividad1_2.xml</span></div>
+
+  <header class="hero">
+    <div class="eyebrow"><span>OVA 1 · Desarrollo móvil con Kotlin</span><b>Actividad 1.2</b></div>
+    <h1>Conecta los <em>cables</em></h1>
+    <p class="lead">Une cada término del ecosistema Android con su definición, como cuando conectas pantallas en el editor de navegación de Android Studio.</p>
+    <div class="chips"><span class="chip">5 términos</span><span class="chip">Pareo</span><span class="chip">Intentos ilimitados</span></div>
+  </header>
+
+  <section class="workspace" id="ws">
+    <div class="ws-bar"><span class="tab">Design</span><span>nav_graph · actividad1_2</span><span class="count" id="count"></span></div>
+    <div class="board" id="board">
+      <svg class="wires" id="wires" aria-hidden="true"></svg>
+      <div class="col" id="terms"><span class="col-h">Términos</span></div>
+      <div class="col" id="defs"><span class="col-h">Definiciones</span></div>
+    </div>
+    <div class="sync" id="sync" role="status"></div>
+    <div class="dock">
+      <p class="hint">Arrastra desde un término hasta su definición. En celular también puedes tocar el término y luego la definición. Toca una definición conectada para soltar su cable.</p>
+      <div class="end">
+        <button class="btn ghost" id="reset" type="button">Desconectar todo</button>
+        <button class="btn" id="check" type="button" disabled>Comprobar</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+// Datos del guion. "match" es la letra de la definición correcta.
+const TERMS = [
+  { id: 1, name: "Kotlin",                   match: "C" },
+  { id: 2, name: "Android Studio",           match: "A" },
+  { id: 3, name: "Interfaz de Usuario (UI)", match: "E" },
+  { id: 4, name: "Archivo APK",              match: "B" },
+  { id: 5, name: "Android Manifest",         match: "D" }
+];
+const DEFS = [
+  { l: "A", t: "Entorno de desarrollo integrado (IDE) oficial para programar y probar apps Android." },
+  { l: "B", t: "Paquete ejecutable e instalable que contiene el código y recursos de una aplicación Android." },
+  { l: "C", t: "Lenguaje de programación moderno, conciso y seguro utilizado para Android." },
+  { l: "D", t: "Archivo de configuración central que declara permisos, componentes y requerimientos de la app." },
+  { l: "E", t: "Conjunto de elementos visuales que permiten la interacción directa entre el usuario y la app." }
+];
+const COLORS = ["--c1","--c2","--c3","--c4","--c5"];
+
+const $ = s => document.querySelector(s);
+const board = $("#board"), svg = $("#wires");
+let links = {};      // id del término -> letra de la definición
+let sel = null;      // término elegido en modo tocar
+let drag = null;     // cable que se está arrastrando
+let checked = false;
+let fresh = null;    // último cable creado, para animarlo
+
+function beep(ok){
+  try{
+    const a = beep.ctx = beep.ctx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = a.createOscillator(), g = a.createGain();
+    o.frequency.setValueAtTime(ok ? 660 : 220, a.currentTime);
+    if (ok) o.frequency.setValueAtTime(880, a.currentTime + .09);
+    g.gain.setValueAtTime(.12, a.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, a.currentTime + .28);
+    o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime + .3);
+  }catch(e){}
+}
+function click(){
+  try{
+    const a = beep.ctx = beep.ctx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = a.createOscillator(), g = a.createGain();
+    o.type = "triangle"; o.frequency.setValueAtTime(520, a.currentTime);
+    g.gain.setValueAtTime(.07, a.currentTime); g.gain.exponentialRampToValueAtTime(.001, a.currentTime + .08);
+    o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime + .09);
+  }catch(e){}
+}
+
+// --- Construir nodos ---
+TERMS.forEach((t, k) => {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "node term"; b.dataset.id = t.id;
+  b.style.setProperty("--cc", `var(${COLORS[k]})`);
+  b.innerHTML = `<span class="num">${t.id}</span><span class="name">${t.name}</span><span class="port"></span>`;
+  b.setAttribute("aria-label", `Término ${t.id}: ${t.name}`);
+  $("#terms").append(b);
+
+  b.addEventListener("pointerdown", e => {
+    if (checked || e.button > 0) return;
+    e.preventDefault(); b.setPointerCapture(e.pointerId);
+    drag = { id: t.id, x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, moved: false };
+  });
+  b.addEventListener("pointermove", e => {
+    if (!drag || drag.id !== t.id) return;
+    drag.x = e.clientX; drag.y = e.clientY;
+    if (!drag.moved && Math.hypot(drag.x - drag.x0, drag.y - drag.y0) > 6){ drag.moved = true; b.classList.add("dragging"); }
+    if (drag.moved){
+      document.querySelectorAll(".def.target").forEach(d => d.classList.remove("target"));
+      const over = document.elementFromPoint(drag.x, drag.y)?.closest(".def");
+      if (over) over.classList.add("target");
+      draw();
+    }
+  });
+  b.addEventListener("pointerup", e => {
+    if (!drag || drag.id !== t.id) return;
+    b.classList.remove("dragging");
+    document.querySelectorAll(".def.target").forEach(d => d.classList.remove("target"));
+    if (drag.moved){
+      const over = document.elementFromPoint(e.clientX, e.clientY)?.closest(".def");
+      drag = null;
+      if (over) connect(t.id, over.dataset.l); else update();
+    } else {
+      drag = null;
+      sel = sel === t.id ? null : t.id;   // toque corto: seleccionar
+      update();
+    }
+  });
+  b.addEventListener("pointercancel", () => { drag = null; b.classList.remove("dragging"); update(); });
+  b.addEventListener("keydown", e => {
+    if (checked) return;
+    if (e.key === "Enter" || e.key === " "){ e.preventDefault(); sel = sel === t.id ? null : t.id; update(); }
+  });
+});
+
+DEFS.forEach(d => {
+  const el = document.createElement("div");
+  el.className = "node def"; el.dataset.l = d.l; el.tabIndex = 0; el.setAttribute("role", "button");
+  el.innerHTML = `<span class="let">${d.l}</span><span class="txt">${d.t}</span><span class="port"></span>`;
+  $("#defs").append(el);
+  const act = () => {
+    if (checked) return;
+    if (sel){ connect(sel, d.l); return; }
+    const owner = Object.keys(links).find(id => links[id] === d.l);
+    if (owner){ delete links[owner]; click(); update(); }
+  };
+  el.addEventListener("click", act);
+  el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); act(); } });
+});
+
+function connect(id, letter){
+  for (const k in links) if (links[k] === letter) delete links[k];  // una definición recibe un solo cable
+  links[id] = letter; sel = null; fresh = id;
+  click(); update();
+}
+
+// --- Dibujar cables ---
+function center(el){
+  const r = el.getBoundingClientRect(), b = board.getBoundingClientRect();
+  return { x: r.left + r.width / 2 - b.left, y: r.top + r.height / 2 - b.top };
+}
+function curve(a, z){
+  const dx = Math.max(40, Math.abs(z.x - a.x) * .5);
+  return `M${a.x},${a.y} C${a.x + dx},${a.y} ${z.x - dx},${z.y} ${z.x},${z.y}`;
+}
+function draw(){
+  let html = "";
+  TERMS.forEach((t, k) => {
+    const letter = links[t.id];
+    if (!letter) return;
+    const a = center(document.querySelector(`.term[data-id="${t.id}"] .port`));
+    const z = center(document.querySelector(`.def[data-l="${letter}"] .port`));
+    const state = checked ? (t.match === letter ? "ok" : "bad") : "";
+    const anim = !checked && fresh === t.id ? "draw" : "";
+    html += `<path class="wire ${state} ${anim}" d="${curve(a, z)}" style="stroke:${state ? "" : `var(${COLORS[k]})`}" pathLength="1000" />`;
+  });
+  if (drag && drag.moved){
+    const k = TERMS.findIndex(t => t.id === drag.id);
+    const a = center(document.querySelector(`.term[data-id="${drag.id}"] .port`));
+    const b = board.getBoundingClientRect();
+    html += `<path class="wire temp" d="${curve(a, { x: drag.x - b.left, y: drag.y - b.top })}" style="stroke:var(${COLORS[k]})" />`;
+  }
+  svg.innerHTML = html;
+  svg.querySelectorAll(".wire.draw").forEach(p => p.style.setProperty("--len", 1000));
+  fresh = null;
+}
+
+function update(){
+  document.querySelectorAll(".term").forEach(b => {
+    const id = +b.dataset.id;
+    b.classList.toggle("linked", !!links[id]);
+    b.classList.toggle("sel", sel === id);
+    b.setAttribute("aria-pressed", sel === id);
+  });
+  document.querySelectorAll(".def").forEach(el => {
+    const owner = TERMS.find(t => links[t.id] === el.dataset.l);
+    el.classList.toggle("linked", !!owner);
+    if (owner) el.style.setProperty("--cc", `var(${COLORS[TERMS.indexOf(owner)]})`); else el.style.removeProperty("--cc");
+    el.classList.toggle("ok", checked && !!owner && owner.match === el.dataset.l);
+    el.classList.toggle("bad", checked && !!owner && owner.match !== el.dataset.l);
+  });
+  board.classList.toggle("picking", !!sel);
+  $("#ws").classList.toggle("checked", checked);
+  const c = Object.keys(links).length;
+  $("#count").innerHTML = `<b>${c}</b> / ${TERMS.length} conexiones`;
+  $("#check").disabled = !checked && c < TERMS.length;
+  $("#check").textContent = checked ? "Soltar las incorrectas" : "Comprobar";
+  draw();
+}
+
+$("#check").addEventListener("click", () => {
+  const box = $("#sync");
+  if (checked){
+    for (const id in links){ const t = TERMS.find(x => x.id === +id); if (t.match !== links[id]) delete links[id]; }
+    checked = false; box.className = "sync"; update(); return;
+  }
+  checked = true; sel = null;
+  const ok = TERMS.filter(t => links[t.id] === t.match).length, all = ok === TERMS.length;
+  beep(all);
+  if (all) try{ window.parent.postMessage({ type: "complete" }, "*"); }catch(e){}  // avisa a Rise que la actividad se completó (solo con 5/5)
+  box.className = "sync show " + (all ? "ok" : "bad");
+  box.innerHTML = `<span class="ic">${all ? "✓" : "!"}</span><div><strong>${all ? "Sincronización exitosa" : `${ok} de ${TERMS.length} conexiones correctas`}</strong>
+    <span>${all ? "Reconoces los conceptos base del ecosistema Android. Cada cable quedó en su lugar." : "Los cables rojos van a la definición equivocada. Pulsa Soltar las incorrectas y vuelve a conectarlos."}</span></div>`;
+  update();
+});
+$("#reset").addEventListener("click", () => { links = {}; sel = null; checked = false; $("#sync").className = "sync"; update(); });
+document.addEventListener("pointerdown", e => { if (sel && !e.target.closest(".term,.def")){ sel = null; update(); } });
+
+new ResizeObserver(() => draw()).observe(board);
+if (document.fonts) document.fonts.ready.then(draw);
+update();
+</script>
+</body>
+</html>
